@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: "spring-async-demo"
+  task:
+    execution:
+      thread-name-prefix: "${spring.application.name}-task-"
+      pool:
+        queue-capacity: 1000
+        core-size: 50
+        max-size: 200
+        keep-alive: 60s
+      shutdown:
+        await-termination: true
+        await-termination-period: 30s
+    scheduling:
+      thread-name-prefix: "${spring.application.name}-scheduling-"
+      pool:
+        size: 4
+      shutdown:
+        await-termination: true
+        await-termination-period: 30s
+logging:
+  level:
+    dev.yxy: debug
