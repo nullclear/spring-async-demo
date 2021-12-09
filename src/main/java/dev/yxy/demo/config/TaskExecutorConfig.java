@@ -1,5 +1,7 @@
 package dev.yxy.demo.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -26,6 +28,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration(proxyBeanMethods = false)
 public class TaskExecutorConfig {
 
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * Executor定制，可以有多个，后者会覆盖前者
      * 详见 {@link TaskExecutorBuilder#configure(ThreadPoolTaskExecutor)}
@@ -40,6 +44,14 @@ public class TaskExecutorConfig {
      */
     @Bean
     public TaskDecorator taskDecorator() {
-        return runnable -> runnable;
+        return runnable -> () -> {
+            try {
+                runnable.run();
+            } catch (Throwable e) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("[多线程异常]", e);
+                }
+            }
+        };
     }
 }

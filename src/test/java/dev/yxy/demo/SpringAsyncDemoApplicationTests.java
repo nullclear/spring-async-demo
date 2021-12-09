@@ -24,4 +24,11 @@ class SpringAsyncDemoApplicationTests {
         applicationTaskExecutor.execute(() -> asyncService.testTaskExecution());
         Thread.sleep(1000);
     }
+
+    @Test
+    public void testAsyncException() {
+        applicationTaskExecutor.execute(() -> {
+            throw new NullPointerException("空指针异常");
+        });
+    }
 }
