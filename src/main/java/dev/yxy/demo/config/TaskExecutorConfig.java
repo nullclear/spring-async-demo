@@ -36,11 +36,15 @@ public class TaskExecutorConfig {
      */
     @Bean
     public TaskExecutorCustomizer taskExecutorCustomizer() {
-        return taskExecutor -> taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        return taskExecutor -> {
+            taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+            // taskExecutor.setTaskDecorator();
+        };
     }
 
     /**
-     * 每个Task的装饰器，只能有一个
+     * NOTE - 2023-04-04 异步任务装饰器的唯一性
+     * {@link TaskExecutionAutoConfiguration#taskExecutorBuilder} 71行，只能存在唯一一个装饰器
      */
     @Bean
     public TaskDecorator taskDecorator() {
